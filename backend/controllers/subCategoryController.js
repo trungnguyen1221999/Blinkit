@@ -5,8 +5,9 @@ import { SubCategoryModels } from "../models/subCategoryModels.js";
 const getSubCategories = async (req, res) => {
   try {
     const subCategories = await SubCategoryModels.find()
-      .populate("category", "name") // populate để lấy thông tin category
-      .sort({ createdAt: -1 });
+      .populate("category", "name")
+      .sort({ createdAt: -1 })
+      .lean();
     res.status(200).json(subCategories);
   } catch (error) {
     console.error(error);
@@ -22,7 +23,8 @@ const getSubCategoriesByCategory = async (req, res) => {
       category: { $in: [categoryId] }
     })
       .populate("category", "name")
-      .sort({ createdAt: -1 });
+      .sort({ createdAt: -1 })
+      .lean();
     res.status(200).json(subCategories);
   } catch (error) {
     console.error(error);

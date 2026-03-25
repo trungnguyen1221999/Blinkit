@@ -4,7 +4,7 @@ import CategoryModels from "../models/categoryModels.js";
 // Lấy danh sách tất cả category
 const getCategories = async (req, res) => {
   try {
-    const categories = await CategoryModels.find().sort({ createdAt: -1 });
+    const categories = await CategoryModels.find().sort({ createdAt: -1 }).lean();
     res.status(200).json(categories);
   } catch (error) {
     console.error(error);

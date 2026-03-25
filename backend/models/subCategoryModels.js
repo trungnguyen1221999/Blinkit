@@ -22,6 +22,9 @@ const subCategorySchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+subCategorySchema.index({ category: 1 });
+subCategorySchema.index({ createdAt: -1 });
+
 export const SubCategoryModels = mongoose.model(
   "SubCategory",
   subCategorySchema
