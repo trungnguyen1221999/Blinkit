@@ -7,7 +7,8 @@ const getProducts = async (req, res) => {
     const products = await ProductModels.find()
       .populate("category", "name")
       .populate("SubCategory", "name")
-      .sort({ createdAt: -1 });
+      .sort({ createdAt: -1 })
+      .lean();
     res.status(200).json(products);
   } catch (error) {
     console.error(error);
@@ -21,12 +22,13 @@ const getProductById = async (req, res) => {
     const { id } = req.params;
     const product = await ProductModels.findById(id)
       .populate("category", "name")
-      .populate("SubCategory", "name");
-    
+      .populate("SubCategory", "name")
+      .lean();
+
     if (!product) {
       return res.status(404).json({ message: "Product not found" });
     }
-    
+
     res.status(200).json(product);
   } catch (error) {
     console.error(error);
@@ -275,8 +277,9 @@ const getProductsByCategory = async (req, res) => {
     })
       .populate("category", "name")
       .populate("SubCategory", "name")
-      .sort({ createdAt: -1 });
-    
+      .sort({ createdAt: -1 })
+      .lean();
+
     res.status(200).json(products);
   } catch (error) {
     console.error(error);
@@ -293,8 +296,9 @@ const getProductsBySubCategory = async (req, res) => {
     })
       .populate("category", "name")
       .populate("SubCategory", "name")
-      .sort({ createdAt: -1 });
-    
+      .sort({ createdAt: -1 })
+      .lean();
+
     res.status(200).json(products);
   } catch (error) {
     console.error(error);
