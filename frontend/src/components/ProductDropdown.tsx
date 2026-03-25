@@ -1,9 +1,10 @@
 import  { useState, useRef, useEffect } from 'react';
 import { ChevronDown, Package, Grid3X3, Menu } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { getCategoriesApi } from '../api/categoryApi/categoryApi';
 import { getSubCategoriesByCategoryApi } from '../api/subCategoryApi/subCategoryApi';
+import { getProductsByCategoryApi } from '../api/adminApi/productApi';
 
 interface Category {
   _id: string;
@@ -37,6 +38,7 @@ const ProductDropdown = ({ mobile = false }: ProductDropdownProps) => {
   const [subCategories, setSubCategories] = useState<{ [key: string]: SubCategory[] }>({});
   const dropdownRef = useRef<HTMLDivElement>(null);
   const timeoutRef = useRef<number | null>(null);
+  const queryClient = useQueryClient();
 
   // Fetch categories
   const { data: categoriesData = [], isLoading: categoriesLoading } = useQuery({
@@ -71,18 +73,30 @@ const ProductDropdown = ({ mobile = false }: ProductDropdownProps) => {
   const handleCategoryInteraction = async (categoryId: string) => {
     setExpandedCategory(categoryId);
 
-    // Fetch subcategories if not already loaded
+    // Prefetch into React Query cache (used by CategoryPage on navigation)
+    queryClient.prefetchQuery({
+      queryKey: ['subcategories-by-category', categoryId],
+      queryFn: () => getSubCategoriesByCategoryApi(categoryId),
+      staleTime: 0,
+    });
+    queryClient.prefetchQuery({
+      queryKey: ['products-by-category', categoryId],
+      queryFn: () => getProductsByCategoryApi(categoryId),
+      staleTime: 0,
+    });
+
+    // Also populate local state for dropdown display
     if (!subCategories[categoryId]) {
       try {
-        const subs = await getSubCategoriesByCategoryApi(categoryId);
-        // Sort subcategories A-Z
-        const sortedSubs = subs.sort((a: SubCategory, b: SubCategory) => 
-          a.name.localeCompare(b.name)
-        );
-        setSubCategories(prev => ({
-          ...prev,
-          [categoryId]: sortedSubs
-        }));
+        const cached = queryClient.getQueryData<SubCategory[]>(['subcategories-by-category', categoryId]);
+        if (cached) {
+          const sorted = [...cached].sort((a, b) => a.name.localeCompare(b.name));
+          setSubCategories(prev => ({ ...prev, [categoryId]: sorted }));
+        } else {
+          const subs = await getSubCategoriesByCategoryApi(categoryId);
+          const sortedSubs = subs.sort((a: SubCategory, b: SubCategory) => a.name.localeCompare(b.name));
+          setSubCategories(prev => ({ ...prev, [categoryId]: sortedSubs }));
+        }
       } catch (error) {
         console.error('Failed to fetch subcategories:', error);
       }

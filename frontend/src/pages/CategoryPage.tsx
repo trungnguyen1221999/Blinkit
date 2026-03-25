@@ -16,7 +16,7 @@ const CategoryPage = () => {
     if (match) categoryId = match[1];
   }
   // Fetch all categories to get the specific one
-  const { data: categories = [], isLoading: loadingCategories } = useQuery({
+  const { data: categories = [] } = useQuery({
     queryKey: ['categories'],
     queryFn: getCategoriesApi,
   });
@@ -31,7 +31,7 @@ const CategoryPage = () => {
   });
 
   // Fetch subcategories for this category — use categoryId from URL directly (no waterfall)
-  const { data: subCategories = [], isLoading: loadingSubCategories } = useQuery({
+  const { data: subCategories = [] } = useQuery({
     queryKey: ['subcategories-by-category', categoryId],
     queryFn: () => getSubCategoriesByCategoryApi(categoryId!),
     enabled: !!categoryId,
@@ -42,7 +42,7 @@ const CategoryPage = () => {
   const CustomIcon = custom?.icon;
   const bgColor = custom?.bgColor || 'bg-white';
 
-  if (loadingCategories || loadingProducts || loadingSubCategories) {
+  if (loadingProducts) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-white">
         <div className="text-center">
