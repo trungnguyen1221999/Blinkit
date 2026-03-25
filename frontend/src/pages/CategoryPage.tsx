@@ -22,20 +22,19 @@ const CategoryPage = () => {
   });
   // Find the current category by id only
   const currentCategory = categories.find((cat: any) => cat._id === categoryId);
-  const categoryIdFromCategory = currentCategory?._id;
 
-  // Fetch products for this category
+  // Fetch products for this category — use categoryId from URL directly (no waterfall)
   const { data: products = [], isLoading: loadingProducts } = useQuery({
-    queryKey: ['products-by-category', categoryIdFromCategory],
-    queryFn: () => categoryIdFromCategory ? getProductsByCategoryApi(categoryIdFromCategory) : [],
-    enabled: !!categoryIdFromCategory,
+    queryKey: ['products-by-category', categoryId],
+    queryFn: () => getProductsByCategoryApi(categoryId!),
+    enabled: !!categoryId,
   });
 
-  // Fetch subcategories for this category (API riêng)
+  // Fetch subcategories for this category — use categoryId from URL directly (no waterfall)
   const { data: subCategories = [], isLoading: loadingSubCategories } = useQuery({
-    queryKey: ['subcategories-by-category', categoryIdFromCategory],
-    queryFn: () => categoryIdFromCategory ? getSubCategoriesByCategoryApi(categoryIdFromCategory) : [],
-    enabled: !!categoryIdFromCategory,
+    queryKey: ['subcategories-by-category', categoryId],
+    queryFn: () => getSubCategoriesByCategoryApi(categoryId!),
+    enabled: !!categoryId,
   });
 
   // Get custom data for this category

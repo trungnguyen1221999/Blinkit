@@ -59,8 +59,8 @@ const SubCategoryPage = () => {
     }
   }, [location.pathname, seoUrl, currentSubCategory, navigate]);
 
-  // Loading UI
-  if (isLoading || isLoadingProducts) {
+  // Loading UI — only block on products, subcategories load in background for display
+  if (isLoadingProducts) {
     return (
       <div className="container mx-auto px-4 py-16 flex justify-center">
         <div className="animate-spin h-10 w-10 rounded-full border-b-2 border-primary-600"></div>
