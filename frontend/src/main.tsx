@@ -7,7 +7,13 @@ import router from "./index.tsx";
 import { ToastContainer } from "react-toastify";
 
 // Tạo instance QueryClient
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5 * 60 * 1000, // 5 minutes
+    },
+  },
+});
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>

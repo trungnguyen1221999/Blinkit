@@ -3,6 +3,7 @@ import { useAuth } from "../Context/AuthContext";
 import { addToCartApi } from "../api/cartApi";
 import { useQueryClient } from "@tanstack/react-query";
 import { useCartDrawer } from "./CartDrawerContext";
+import { getProductByIdApi } from "../api/adminApi/productApi";
 
 // Helper: slugify string (safe)
 function slugify(str: any) {
@@ -49,6 +50,14 @@ const ProductCard = ({ product }: ProductCardProps) => {
   const slug = `${nameSlug}-${product._id}`;
   const productUrl = `/products/${category}/${subcategory}/${slug}`;
 
+  const handleMouseEnter = () => {
+    queryClient.prefetchQuery({
+      queryKey: ['product', product._id],
+      queryFn: () => getProductByIdApi(product._id),
+      staleTime: 5 * 60 * 1000,
+    });
+  };
+
   const handleAddToCart = async () => {
     let guestId = localStorage.getItem('guestId');
     if (!guestId) {
@@ -70,7 +79,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
   };
 
   return (
-    <div className="flex flex-col bg-white rounded-lg shadow p-4 hover:shadow-lg relative">
+    <div className="flex flex-col bg-white rounded-lg shadow p-4 hover:shadow-lg relative" onMouseEnter={handleMouseEnter}>
       {discount > 0 && (
         <div className="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full z-10 shadow-lg animate-bounce">
           Sale
@@ -116,6 +125,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
         )}
       </div>
       <button
+        type="button"
         className="mt-auto px-3 py-1.5 bg-primary-100 text-primary-700 rounded hover:bg-primary-200 text-sm font-semibold transition-all"
         onClick={handleAddToCart}
       >
