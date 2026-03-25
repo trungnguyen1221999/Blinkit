@@ -36,7 +36,7 @@ const SaleOffSlideshow = () => {
 
   // Fetch all products
   const { data: products = [], isLoading } = useQuery({
-    queryKey: ['products', 'all'],
+    queryKey: ['products'],
     queryFn: getAllProductsApi,
   });
 

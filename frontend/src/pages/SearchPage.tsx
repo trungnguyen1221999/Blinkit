@@ -11,7 +11,7 @@ const SearchPage = () => {
   const query = new URLSearchParams(location.search).get("q")?.toLowerCase() || "";
 
   const { data: products = [], isLoading: loadingProducts } = useQuery({
-    queryKey: ["products", "all"],
+    queryKey: ["products"],
     queryFn: getAllProductsApi,
   });
   const { data: categories = [], isLoading: loadingCategories } = useQuery({

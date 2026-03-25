@@ -17,7 +17,7 @@ interface Product {
 
 const SaleOffPageDetail = () => {
   const { data: products = [], isLoading } = useQuery({
-    queryKey: ['products', 'all'],
+    queryKey: ['products'],
     queryFn: getAllProductsApi,
   });
 

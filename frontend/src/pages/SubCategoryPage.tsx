@@ -30,7 +30,7 @@ const SubCategoryPage = () => {
   const subCategoryId = extractId(params.subCategoryId);
 
   // Fetch subcategories
-  const { data: subCategories = [], isLoading } = useQuery({
+  const { data: subCategories = [] } = useQuery({
     queryKey: ['subcategories'],
     queryFn: getSubCategoriesApi,
   });

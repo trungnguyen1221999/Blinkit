@@ -25,10 +25,11 @@ const Search = () => {
     }
   };
 
-  // Fetch all products for suggestion
+  // Only fetch products when user is actively searching
   const { data: products = [] } = useQuery({
-    queryKey: ["products", "all"],
+    queryKey: ["products"],
     queryFn: getAllProductsApi,
+    enabled: isFocused && value.trim().length > 0,
   });
 
   // Filter products by value
