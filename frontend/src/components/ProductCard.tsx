@@ -51,10 +51,13 @@ const ProductCard = ({ product }: ProductCardProps) => {
   const productUrl = `/products/${category}/${subcategory}/${slug}`;
 
   const handleMouseEnter = () => {
+    console.log('[Prefetch] hovering product:', product._id);
     queryClient.prefetchQuery({
       queryKey: ['product', product._id],
       queryFn: () => getProductByIdApi(product._id),
       staleTime: 5 * 60 * 1000,
+    }).then(() => {
+      console.log('[Prefetch] done:', product._id);
     });
   };
 
